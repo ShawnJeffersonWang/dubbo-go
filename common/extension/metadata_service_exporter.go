@@ -23,7 +23,7 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/metadata/service/exporter"
 )
 
-type MetadataServiceExporterCreator func(service.MetadataService) exporter.MetadataServiceExporter
+type MetadataServiceExporterCreator func(service.MetadataService, service.MetadataServiceV1, service.MetadataServiceV2) exporter.MetadataServiceExporter
 
 var (
 	metadataServiceExporterInsMap = make(map[string]MetadataServiceExporterCreator, 2)
@@ -35,12 +35,12 @@ func SetMetadataServiceExporter(key string, creator MetadataServiceExporterCreat
 }
 
 // GetMetadataServiceExporter will create a MetadataServiceExporter instance
-func GetMetadataServiceExporter(key string, s service.MetadataService) exporter.MetadataServiceExporter {
+func GetMetadataServiceExporter(key string, s service.MetadataService, sV1 service.MetadataServiceV1, sV2 service.MetadataServiceV2) exporter.MetadataServiceExporter {
 	if key == "" {
 		key = constant.DefaultKey
 	}
 	if creator, ok := metadataServiceExporterInsMap[key]; ok {
-		return creator(s)
+		return creator(s, sV1, sV2)
 	}
 	return nil
 }
